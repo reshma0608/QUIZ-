@@ -182,10 +182,7 @@ function checkAnswer(btn,ans){
     if(idx==q.a) b.classList.add("correct");
     else if(b===btn) b.classList.add("wrong");
   });
-  setTimeout(()=>{
-  if(ans==q.a) correctSound.play(); 
-  else wrongSound.play();
-  },50);
+}
   if(ans == q.a) score++;
   setTimeout(nextQuestion,1000);
 }
@@ -195,17 +192,40 @@ function nextQuestion(){
   if(i<questions.length) loadQuestion();
   else {document.getElementById("progressBar").style.width="100%"; finishQuiz();}
 }
-
 function finishQuiz(){
-  let board=JSON.parse(localStorage.getItem("board"))||[];
-  board.push({name:playerName, score:score});
-  board.sort((a,b)=>b.score-a.score);
-  board=board.slice(0,5);
+  // Get leaderboard from localStorage
+  let board = JSON.parse(localStorage.getItem("board")) || [];
+  
+  // Add current player score
+  board.push({name: playerName, score: score});
+  
+  // Sort descending by score
+  board.sort((a, b) => b.score - a.score);
+  
+  // Keep top 5
+  board = board.slice(0, 5);
   localStorage.setItem("board", JSON.stringify(board));
-  let html="<h3>Leaderboard</h3>";
-  board.forEach((p,i)=>{ html+=`<p>${i+1}. ${p.name} - ${p.score}</p>`; });
-  document.body.innerHTML=`<div class="box"><h2>${playerName}, Score: ${score}</h2>${html}<button onclick="location.reload()">Restart</button></div>`;
+
+  // Build leaderboard HTML
+  let html = "<h3>🏆 Leaderboard</h3>";
+  board.forEach((p, i) => {
+    html += `<p>${i + 1}. ${p.name} - ${p.score}</p>`;
+  });
+
+  // Show final congratulations + score
+  document.body.innerHTML = `
+    <div class="box">
+      <h2 style="color:#00e676; animation: glow 1s infinite alternate;">🎉 Congratulations ${playerName}! 🎉</h2>
+      <h3>Your Score is: ${score} / ${questions.length}</h3>
+      ${score >= Math.ceil(questions.length/2) 
+        ? "<p>👏 Great Job! You passed the quiz!</p>" 
+        : "<p>😅 Keep Practicing! You can do better!</p>"}
+      ${html}
+      <button onclick="location.reload()">Restart Quiz</button>
+    </div>
+  `;
 }
+
 </script>
 </body>
 </html>
