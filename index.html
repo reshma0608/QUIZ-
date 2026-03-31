@@ -23,9 +23,6 @@ button:hover { background:#00e676; transform:scale(1.05); }
 </head>
 <body>
 
-<audio id="correctSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
-<audio id="wrongSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
-
 <div class="box" id="startBox">
   <h1 class="title">QUIZ</h1>
   <input id="playerName" placeholder="Your Name">
@@ -59,67 +56,30 @@ button:hover { background:#00e676; transform:scale(1.05); }
 // Variables
 let i=0, score=0, time=15, timer;
 let questions=[], playerName="", stream="", numQuestions=10;
-let correctSound=document.getElementById("correctSound"), wrongSound=document.getElementById("wrongSound");
 
-// --- Science Questions (Physics, Chemistry, Biology, Math, Computer) ---
+// --- Science Questions ---
 const scienceQuestions = [
-  // Physics
   {q:"Velocity formula?", o:["s/t","v^2/t","s*t"], a:0}, {q:"Newton's 1st law?", o:["Inertia","F=ma","Action-reaction"], a:0},
   {q:"Acceleration?", o:["v-u/t","s/t","F/m"], a:0}, {q:"Force?", o:["ma","mv","m+a"], a:0},
   {q:"Unit of force?", o:["Newton","Joule","Watt"], a:0}, {q:"Unit of energy?", o:["Joule","Newton","Watt"], a:0},
   {q:"Gravitational constant?", o:["6.67e-11","9.8","3e8"], a:0}, {q:"Speed of light?", o:["3e8 m/s","9.8 m/s^2","1e6"], a:0},
   {q:"Work formula?", o:["F*d","m*v","1/2mv^2"], a:0}, {q:"Power formula?", o:["Work/Time","F*d","E/m"], a:0},
-  // Chemistry
   {q:"Water formula?", o:["H2O","CO2","NaCl"], a:0}, {q:"Acid example?", o:["HCl","NaOH","CH4"], a:0},
   {q:"Base example?", o:["NaOH","HCl","CO2"], a:0}, {q:"Atomic number?", o:["Protons","Neutrons","Electrons"], a:0},
   {q:"Mass number?", o:["Protons+Neutrons","Electrons+Protons","Only Neutrons"], a:0}, {q:"pH neutral?", o:["7","0","14"], a:0},
-  {q:"Organic element?", o:["Carbon","Oxygen","Hydrogen"], a:0}, {q:"Noble gas?", o:["Neon","Oxygen","Hydrogen"], a:0},
-  {q:"Symbol of Sodium?", o:["Na","S","So"], a:0}, {q:"Symbol of Gold?", o:["Au","Ag","Gd"], a:0},
-  // Biology
   {q:"DNA stands for?", o:["Deoxyribonucleic Acid","Ribonucleic Acid","Protein"], a:0}, {q:"Mitochondria?", o:["Powerhouse","Nucleus","Ribosome"], a:0},
   {q:"Photosynthesis?", o:["CO2+H2O->O2+Glucose","O2+H2O->CO2","C6H12O6->CO2"], a:0}, {q:"Cell membrane?", o:["Control entry/exit","Support","Replication"], a:0},
-  {q:"Blood cells?", o:["Red/White","Bone","Skin"], a:0}, {q:"Heart chambers?", o:["4","2","6"], a:0},
-  {q:"Respiration?", o:["Oxygen->Energy","Energy->Oxygen","CO2->O2"], a:0}, {q:"Enzyme?", o:["Amylase","Glucose","Sucrose"], a:0},
-  {q:"Genetic material?", o:["DNA","RNA","Protein"], a:0}, {q:"Bacteria?", o:["Prokaryote","Eukaryote","Virus"], a:0},
-  // Math
-  {q:"Derivative x^2?", o:["2x","x","x^3"], a:0}, {q:"Integral x?", o:["0.5x^2","x^2","x"], a:0},
-  {q:"Limit (1+x)^n?", o:["1","0","n"], a:0}, {q:"Circle area?", o:["πr^2","2πr","πd"], a:0},
-  {q:"Square perimeter?", o:["4a","2a","a^2"], a:0}, {q:"Pythagoras?", o:["a^2+b^2=c^2","a+b=c","a^2-b^2=c^2"], a:0},
-  {q:"Factorial 5?", o:["120","24","60"], a:0}, {q:"Sum 1-100?", o:["5050","5000","1000"], a:0},
-  {q:"Prime example?", o:["2","4","6"], a:0}, {q:"Sqrt 16?", o:["4","2","8"], a:0},
-  // Computer
-  {q:"HTML full form?", o:["Hyper Text Markup Language","High Text","Hyperlink"], a:0}, {q:"C factorial?", o:["int f=1;for(int i=1;i<=5;i++)f*=i;","printf(5!);","None"], a:0},
-  {q:"JS var?", o:["let","varies","set"], a:0}, {q:"Array index?", o:["0","1","-1"], a:0},
-  {q:"CSS?", o:["Cascading Style Sheet","Color Sheet","Computer Sheet"], a:0}, {q:"HTTP?", o:["Hypertext Transfer Protocol","Hypertext Transport","Hyperlink Transfer"], a:0},
-  {q:"Binary?", o:["0 and 1","1 and 2","0-9"], a:0}, {q:"Loop type C?", o:["for","loop","repeat"], a:0},
-  {q:"Function return?", o:["int","fun","voidx"], a:0}, {q:"Compiler?", o:["GCC","Chrome","Notepad"], a:0}
+  {q:"Derivative x^2?", o:["2x","x","x^3"], a:0}, {q:"Integral x?", o:["0.5x^2","x^2","x"], a:0}, {q:"Circle area?", o:["πr^2","2πr","πd"], a:0},
+  {q:"HTML full form?", o:["Hyper Text Markup Language","High Text","Hyperlink"], a:0}, {q:"JS var?", o:["let","varies","set"], a:0}
 ];
 
-// --- Management Questions (Economics, Accountancy, Business Studies, Finance, Computer) ---
+// --- Management Questions ---
 const managementQuestions = [
   {q:"Law of Demand?", o:["Price↑ Q↓","Price↑ Q↑","Same"], a:0}, {q:"GDP full form?", o:["Gross Domestic Product","Global Data","General Demand"], a:0},
-  {q:"Inflation?", o:["Price rise","Money decrease","Population rise"], a:0}, {q:"Market type?", o:["Perfect","Free","None"], a:0},
-  {q:"Fiscal policy?", o:["Govt spend/tax","Private","None"], a:0}, {q:"Microeconomics?", o:["Individual","National","World"], a:0},
-  {q:"Macroeconomics?", o:["National","Individual","World"], a:0}, {q:"Opportunity cost?", o:["Next best choice","All","None"], a:0},
-  {q:"Elasticity?", o:["Change %","Speed","Acceleration"], a:0}, {q:"Supply law?", o:["Price↑ Supply↑","Price↑ Supply↓","No change"], a:0},
-  {q:"Asset?", o:["Owned value","Liability","Expense"], a:0}, {q:"Liability?", o:["Owe money","Own","Profit"], a:0},
-  {q:"Revenue?", o:["Income","Loss","Loan"], a:0}, {q:"Expense?", o:["Cost","Profit","Asset"], a:0},
-  {q:"Capital?", o:["Owner fund","Debt","Cash"], a:0}, {q:"Debit?", o:["Left","Right","Center"], a:0},
-  {q:"Credit?", o:["Right","Left","Center"], a:0}, {q:"Balance sheet?", o:["Assets=Liabilities+Capital","Profit sheet","Income"], a:0},
-  {q:"Profit?", o:["Revenue-Expense","Revenue+Expense","Revenue"], a:0}, {q:"Loss?", o:["Expense-Revenue","Revenue-Expense","Revenue"], a:0},
-  {q:"Business objective?", o:["Profit","Loss","Loan"], a:0}, {q:"Capital structure?", o:["Debt+Equity","Only Debt","Only Equity"], a:0},
-  {q:"Manager function?", o:["Planning","Sleeping","Earning"], a:0}, {q:"Financial statement?", o:["Balance sheet","Profit sheet","Ledger"], a:0},
-  {q:"Social responsibility?", o:["CSR","Profit","Loan"], a:0}, {q:"Business environment?", o:["Internal/External","Only Internal","Only External"], a:0},
-  {q:"Marketing mix?", o:["4P","3P","5P"], a:0}, {q:"Finance function?", o:["Budgeting","Sleeping","Working"], a:0},
-  // Computer subject
-  {q:"HTML tag for paragraph?", o:["<p>","<h1>","<div>"], a:0}, {q:"JS data type?", o:["String","Number","Boolean"], a:0},
-  {q:"CSS selector?", o:[".class","#id","*"], a:0}, {q:"Loop in JS?", o:["for","while","repeat"], a:0},
-  {q:"Function in JS?", o:["function","func","method"], a:0}, {q:"C comment syntax?", o:["/* */","//","##"], a:0},
-  {q:"Binary representation?", o:["0 & 1","0-9","1 & 2"], a:0}, {q:"HTTP meaning?", o:["Hypertext Transfer Protocol","Hypertext Transfer","Hyperlink Transfer"], a:0},
-  {q:"HTML attribute?", o:["class","id","name"], a:0}, {q:"JS variable declaration?", o:["let","var","const"], a:0}, {q:"CSS property?", o:["color","background","margin"], a:0}
+  {q:"Inflation?", o:["Price rise","Money decrease","Population rise"], a:0}, {q:"Market type?", o:["Perfect","Free","None"], a:0}, {q:"Fiscal policy?", o:["Govt spend/tax","Private","None"], a:0}
 ];
 
-// --- Functions ---
+// Functions
 function shuffleOptions(q){
   let correct = q.o[q.a];
   let opts = q.o.slice();
@@ -132,8 +92,7 @@ function shuffleOptions(q){
 }
 
 function startQuiz(){
-  playerName=document.getElementById("playerName").value;
-  playerName=playerName.trim().toUpperCase();
+  playerName=document.getElementById("playerName").value.trim().toUpperCase();
   stream=document.getElementById("stream").value;
   numQuestions=parseInt(document.getElementById("numQuestions").value);
   if(!playerName || !stream || !numQuestions){ alert("Fill all fields!"); return; }
@@ -182,7 +141,6 @@ function checkAnswer(btn,ans){
     if(idx==q.a) b.classList.add("correct");
     else if(b===btn) b.classList.add("wrong");
   });
-}
   if(ans == q.a) score++;
   setTimeout(nextQuestion,1000);
 }
@@ -192,28 +150,18 @@ function nextQuestion(){
   if(i<questions.length) loadQuestion();
   else {document.getElementById("progressBar").style.width="100%"; finishQuiz();}
 }
+
 function finishQuiz(){
-  // Get leaderboard from localStorage
-  let board = JSON.parse(localStorage.getItem("board")) || [];
-  
-  // Add current player score
-  board.push({name: playerName, score: score});
-  
-  // Sort descending by score
-  board.sort((a, b) => b.score - a.score);
-  
-  // Keep top 5
-  board = board.slice(0, 5);
+  let board=JSON.parse(localStorage.getItem("board"))||[];
+  board.push({name:playerName, score:score});
+  board.sort((a,b)=>b.score-a.score);
+  board=board.slice(0,5);
   localStorage.setItem("board", JSON.stringify(board));
 
-  // Build leaderboard HTML
-  let html = "<h3>🏆 Leaderboard</h3>";
-  board.forEach((p, i) => {
-    html += `<p>${i + 1}. ${p.name} - ${p.score}</p>`;
-  });
+  let html="<h3>🏆 Leaderboard</h3>";
+  board.forEach((p,i)=>{ html+=`<p>${i+1}. ${p.name} - ${p.score}</p>`; });
 
-  // Show final congratulations + score
-  document.body.innerHTML = `
+  document.body.innerHTML=`
     <div class="box">
       <h2 style="color:#00e676; animation: glow 1s infinite alternate;">🎉 Congratulations ${playerName}! 🎉</h2>
       <h3>Your Score is: ${score} / ${questions.length}</h3>
@@ -225,7 +173,6 @@ function finishQuiz(){
     </div>
   `;
 }
-
 </script>
 </body>
 </html>
